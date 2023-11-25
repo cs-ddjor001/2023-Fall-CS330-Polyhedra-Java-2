@@ -44,6 +44,11 @@ public class Composite extends Polyhedron
 
         allPolyhedra = new Vector<Polyhedron>();
 
+        for (Polyhedron poly : src.allPolyhedra)
+        {
+            this.add(poly);
+        }
+
     }
 
     /**
@@ -55,6 +60,9 @@ public class Composite extends Polyhedron
      */
     public void add(Polyhedron toAdd)
     {
+        Polyhedron copy = toAdd.clone();
+        allPolyhedra.add(copy);
+        this.boundingBox.merge(copy.getBoundingBox());
 
     }
 
@@ -67,6 +75,14 @@ public class Composite extends Polyhedron
      */
     public void read(Scanner scanner)
     {
+        int numOfPolyhedra = scanner.nextInt();
+        for (int i = 0; i < numOfPolyhedra; i++)
+        {
+            Polyhedron poly = PolyhedronFactory.createAndRead(scanner);
+            this.allPolyhedra.add(poly);
+            boundingBox.merge(poly.getBoundingBox());
+        }
+
 
     }
 
@@ -80,7 +96,12 @@ public class Composite extends Polyhedron
      */
     public void scale(double scalingFactor)
     {
+        for (Polyhedra poly : this.allPolyhedra)
+        {
+            poly.scale(scalingFactor);
+        }
 
+        this.boundingBox.scale(scalingFactor);
     }
 
     /**
@@ -115,8 +136,17 @@ public class Composite extends Polyhedron
     @Override
     public String toString()
     {
+        StringBuilder bld = new StringBuilder();
 
-        return "Composite.toString not implemented";
+        bld.append(super.toString());
+        bld.append(this.size() + " polyhedra" + "\n");
+
+        for (Polyhedron poly : this.allPolyhedra)
+        {
+            bld.append("  " + poly.toString() + "\n");
+        }
+
+        return bld.toString();
     }
 }
 
